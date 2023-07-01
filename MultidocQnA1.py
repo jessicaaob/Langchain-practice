@@ -49,7 +49,7 @@ elif uploaded_files:
   # model_name = "gpt-4"
 
   retriever = vStore.as_retriever()
-  retriever.search_kwargs = {'k':11}
+  retriever.search_kwargs = {'k':5}
 
   #initiate model
   llm = OpenAI(model_name=model_name, openai_api_key = st.secrets["openai_api_key"], streaming=True)
