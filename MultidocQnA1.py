@@ -22,7 +22,7 @@ def read_and_textify(files):
           sources_list.append(file.name + "_page_"+str(i))
     return [text_list,sources_list]
   
-st.set_page_config(layout="centered", page_title="Multidoc_QnA")
+st.set_page_config(layout="centered", page_title="ESB_Help")
 st.header("ESB Help Centre Q&A")
 st.write("---")
   
