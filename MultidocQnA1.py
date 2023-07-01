@@ -7,7 +7,7 @@ from langchain import OpenAI, VectorDBQA
 from langchain.chains import RetrievalQAWithSourcesChain
 import PyPDF2
 
-#This function will go through pdf and extract and return list of page texts.
+#Function goes through pdfs and extracts and returns a list of all combined text and a list of combined sources 
 def read_and_textify(files):
     text_list = []
     sources_list = []
@@ -21,43 +21,49 @@ def read_and_textify(files):
           text_list.append(text)
           sources_list.append(file.name + "_page_"+str(i))
     return [text_list,sources_list]
-  
+
+# Some streamlit app set up/ configuration
 st.set_page_config(layout="centered", page_title="ESB_Help")
 st.header("ESB Help Centre Q&A")
 st.write("---")
   
-#file uploader
+#streamlit file uploader
 uploaded_files = st.file_uploader("Upload documents",accept_multiple_files=True, type=["txt","pdf"])
 st.write("---")
 
+# outcome after files are uploaded or not
 if uploaded_files is None:
   st.info(f"""Upload files to analyse""")
 elif uploaded_files:
   st.write(str(len(uploaded_files)) + " document(s) loaded..")
-  
+
+# use pdf function from above to read th euploaded pdfs and output the text and sources lists
   textify_output = read_and_textify(uploaded_files)
   
   documents = textify_output[0]
   sources = textify_output[1]
-  
+
+  # model set up  
   #extract embeddings
   embeddings = OpenAIEmbeddings(openai_api_key = st.secrets["openai_api_key"])
-  #vstore with metadata. Here we will store page numbers.
+  #vectore with metadata. Here we will store page numbers.
   vStore = Chroma.from_texts(documents, embeddings, metadatas=[{"source": s} for s in sources])
-  #deciding model
+  #pick a model
   model_name = "gpt-3.5-turbo"
-  # model_name = "gpt-4"
-
+  # retriver and number of docs to be used 
+    ### could improve this part, character output limits erroring here) ###
   retriever = vStore.as_retriever()
   retriever.search_kwargs = {'k':3}
 
-  #initiate model
+  # initiate model
   llm = OpenAI(model_name=model_name, openai_api_key = st.secrets["openai_api_key"], streaming=True)
   model = RetrievalQAWithSourcesChain.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
-  
+
+  # more app config
   st.header("Ask your data")
   user_q = st.text_area("Enter your questions here")
   
+  # output printing in the app
   if st.button("Get Response"):
     try:
       with st.spinner("Model is working on it..."):
