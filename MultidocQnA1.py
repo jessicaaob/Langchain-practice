@@ -23,7 +23,7 @@ def read_and_textify(files):
     return [text_list,sources_list]
   
 st.set_page_config(layout="centered", page_title="Multidoc_QnA")
-st.header("Multidoc_QnA")
+st.header("ESB Help Centre Q&A")
 st.write("---")
   
 #file uploader
