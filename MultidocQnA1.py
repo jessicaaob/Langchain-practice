@@ -53,7 +53,7 @@ elif uploaded_files:
   # retriver and number of docs to be used 
     ### could improve this part, character output limits erroring here) ###
   retriever = vStore.as_retriever()
-  retriever.search_kwargs = {'k':3}
+  retriever.search_kwargs = {'k':11}
 
   # initiate model
   llm = OpenAI(model_name=model_name, openai_api_key = st.secrets["openai_api_key"], streaming=True)
