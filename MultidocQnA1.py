@@ -25,8 +25,8 @@ def read_and_textify(files):
 
 # Some streamlit app set up/ configuration
 st.set_page_config(layout="centered", page_title="ESB_Help")
-image = Image.open(https://freebiesupply.com/logos/esb-music-logo-2/)
-st.image(image, caption='ESB Energy for Generations')
+#image = Image.open(https://freebiesupply.com/logos/esb-music-logo-2/)
+st.image("https://freebiesupply.com/logos/esb-music-logo-2/", caption='ESB Energy for Generations')
 st.header("ESB Help Centre Q&A")
 st.write("---")
   
