@@ -1,4 +1,4 @@
-mport streamlit as st
+import streamlit as st
 import langchain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
