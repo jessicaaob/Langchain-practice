@@ -1,10 +1,10 @@
-import streamlit as st
+mport streamlit as st
 import langchain
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain import OpenAI, VectorDBQA
-from langchain.chains import RetrievalQAWithSourcesChain
+from langchain.chains import RetrievalQAWithSourcesChain, RetrievalQA
 import PyPDF2
 
 #Function goes through pdfs and extracts and returns a list of all combined text and a list of combined sources 
@@ -72,7 +72,8 @@ elif uploaded_files:
 
   # initiate model
   llm = OpenAI(model_name=model_name, openai_api_key = st.secrets["openai_api_key"], streaming=True)
-  model = RetrievalQAWithSourcesChain.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
+  #model = RetrievalQAWithSourcesChain.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
+  model = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
 
   # more app config
   st.header("Ask your data")
