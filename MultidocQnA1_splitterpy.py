@@ -1,4 +1,4 @@
-import streamlit as st
+mport streamlit as st
 import langchain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -7,6 +7,9 @@ from langchain import OpenAI, VectorDBQA
 from langchain.chains import RetrievalQAWithSourcesChain
 import PyPDF2
 
+# file_1 =''
+# file_2 = ''
+# files = [file_1, file_2]
 #Function goes through pdfs and extracts and returns a list of all combined text and a list of combined sources 
 def read_and_textify(files):
     text_list = []
@@ -39,11 +42,12 @@ elif uploaded_files:
 
 # use pdf function from above to read th euploaded pdfs and output the text and sources lists
   textify_output = read_and_textify(uploaded_files)
+# textify_output = read_and_textify(files)
 
   documents = textify_output[0]
   sources = textify_output[1]
 
-  text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+  text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100, separators=[" ", ",", "\n"])
   docs = text_splitter.split_documents(documents)
 
   # model set up  
