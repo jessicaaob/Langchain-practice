@@ -14,10 +14,12 @@ def read_and_textify(files):
     for file in files:
         pdfReader = PyPDF2.PdfReader(file)
         #print("Page Number:", len(pdfReader.pages))
-        for i in range(len(pdfReader.pages)):
-          pageObj = pdfReader.pages[i]
-          text += pageObj.extract_text()
-          pageObj.clear()
+        # for i in range(len(pdfReader.pages)):
+        #   pageObj = pdfReader.pages[i]
+        #   text += pageObj.extract_text()
+        #   pageObj.clear()
+        for page in pdfReader.pages:
+           text += page.extract_text()
           # text_extend += text
           # sources_list.extend(file.name + "_page_"+str(i))
     return text
