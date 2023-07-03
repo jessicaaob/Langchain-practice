@@ -1,15 +1,12 @@
 import streamlit as st
 import langchain
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain import OpenAI, VectorDBQA
 from langchain.chains import RetrievalQAWithSourcesChain
 import PyPDF2
 
-# file_1 =''
-# file_2 = ''
-# files = [file_1, file_2]
 #Function goes through pdfs and extracts and returns a list of all combined text and a list of combined sources 
 def read_and_textify(files):
     text_list = []
@@ -21,8 +18,8 @@ def read_and_textify(files):
           pageObj = pdfReader.pages[i]
           text = pageObj.extract_text()
           pageObj.clear()
-          text_list.append(text)
-          sources_list.append(file.name + "_page_"+str(i))
+          text_list.extend(text)
+          sources_list.extend(file.name + "_page_"+str(i))
     return [text_list,sources_list]
 
 # Some streamlit app set up/ configuration
@@ -47,15 +44,23 @@ elif uploaded_files:
   documents = textify_output[0]
   sources = textify_output[1]
 
-  text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100, separators=[" ", ",", "\n"])
-  docs = text_splitter.split_documents(documents)
+  # text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100, separators=[" ", ",", "\n"])
+  # docs = text_splitter.split_documents(documents)
+    # split into chunks
+  text_splitter = CharacterTextSplitter(
+    separator="\n",
+    chunk_size=1000,
+    chunk_overlap=200,
+    length_function=len
+      )
+  chunks = text_splitter.split_text(documents)
 
   # model set up  
   #extract embeddings
   embeddings = OpenAIEmbeddings(openai_api_key = st.secrets["openai_api_key"])
   #vectore with metadata. Here we will store page numbers.
 
-  vStore = Chroma.from_texts(docs, embeddings, metadatas=[{"source": s} for s in sources])
+  vStore = Chroma.from_texts(chunks, embeddings, metadatas=[{"source": s} for s in sources])
   #pick a model
   model_name = "gpt-3.5-turbo"
   # retriver and number of docs to be used 
